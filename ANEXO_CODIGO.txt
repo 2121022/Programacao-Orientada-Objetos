@@ -1,0 +1,1127 @@
+import greenfoot.*;  
+
+public class Background extends World
+{
+    public Background()
+    { 
+        super(1300, 700, 1);
+        addObject(new ButtonBarbie(), 400, 355); //ADICIONA BOTAO BARBIE
+    }
+}
+
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class Credits extends World
+{
+    public Credits()
+    {   
+        super(1300, 700, 1); 
+        addObject(new ButtonBack(), 320, 510); //ADICIONA BOTAO BACK
+    }
+}
+
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class GameOver extends World
+{
+    public GameOver()
+    {    
+        super(1300, 700, 1); 
+        Greenfoot.playSound("gameover.mp3"); // SOM GAME OVER
+        addObject(new ButtonBack(),720,564);
+        addObject(new ButtonPlayAgain(),711,478);
+        //ADICIONAR BOTOES BACK E PLAY AGAIN 
+    }
+}
+
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class Help extends World
+{
+    public Help()
+    {    
+        // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
+        super(1300, 700, 1); 
+        addObject(new ButtonBack(), 320, 510); //BOTAO PARA VOLTAR ATRAS
+    }
+}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class StartMenu extends World
+{
+    public StartMenu()
+    {    
+        super(1300, 700, 1); 
+        addObject(new ButtonPlay(), 320, 155);
+        addObject(new ButtonHelp(), 320, 255);
+        addObject(new ButtonCredits(), 320, 355);
+        addObject(new ButtonMainMenu(), 100, 600); 
+        //ADICIONAR BOTOES PLAY HELP CREDITS E MAINMENU
+    }
+}
+
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class Win extends World
+{
+    public Win(int Score)
+    {    
+        super(1300, 700, 1); 
+        showText("SCORE: "+ Score,665,450); //DA O SCORE FINAL
+        GreenfootSound sound = new GreenfootSound("barbieWin.mp3");
+        sound.play(); //SOM QUANDO GANHA
+        addObject(new ButtonMainMenu(),100, 600); //BOTAO PARA VOLTAR AO MAINMENU
+        addObject(new ButtonPlayAgain(), 654, 526); //OPCAO DE SAIR OU JOGAR DE NOVO
+    }
+}
+
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class Game extends World
+{
+    private GreenfootSound gameMusic = new GreenfootSound("GameTheme.mp3");
+    //VARIAVEIS
+    private int score=0;
+    private int lifeBarbie=100;
+    private int lifeKen=100;
+    
+    private boolean getPotion1Barbie=false;
+    private boolean getPotion2Barbie=false;
+    private boolean getPotion1Ken=false;
+    private boolean getPotion2Ken=false;
+
+    public Game()
+    {    
+        super(1300, 700, 1); 
+        
+        gameDesign();
+        addRightHeel();
+        addRightMascara();
+        addLeftHeel();
+        addLeftMascara();
+        
+        score=0; //COMECA A 0
+        playersScore();
+        //MOSTRA O HP DA BARBIE E DO KEN
+        showText("BARBIE'S HP: 100 ",getWidth()/4,50);
+        showText("KEN'S HP: 100 ",getWidth()/2 + 350,50);
+        
+    }
+    
+    public void act(){
+       gameMusic.play();
+        addRightHeel();
+        addRightMascara();
+        addLeftHeel();
+        addLeftMascara();
+        barbieHP();
+        kenHP();
+        playersScore();
+        lose();
+        win();
+    }
+    
+    public void lose() //SE A VIDA DA BARBIE OU A DO KEN FOR MENOR OU IGUAL A 0 DA GAMEOVER
+    {
+        if (lifeBarbie<=0 || lifeKen<=0)
+        {
+            Greenfoot.setWorld(new GameOver());
+            gameMusic.stop();
+        }
+    }
+    
+    public void win(){ //SE APANHAM AS POCOES TODAS GANHAM
+        if(getPotion1Barbie==true && getPotion2Barbie==true && getPotion1Ken==true && getPotion2Ken==true ){ 
+            Greenfoot.setWorld(new Win(score)); 
+            gameMusic.stop(); 
+        }
+    }
+    //APARECEM ALEATORIO NO GAME. OBSTACULO HEEL E MASCARA PODEM VIR DA ESQUERDA E DA DIREITA
+    public void addRightHeel()
+    {
+        if (Greenfoot.getRandomNumber(400)<1)
+        {
+            int x = 0;
+            int y = Greenfoot.getRandomNumber(getHeight()-50);
+            addObject(new Heel1(), x, y);
+        }
+    }
+
+      public void addRightMascara()
+    {
+        if (Greenfoot.getRandomNumber(400)<1)
+        {
+            int x = 0;
+            int y = Greenfoot.getRandomNumber(getHeight()-50);
+            addObject(new Mascara1(), x, y);
+        }
+    }
+    
+      public void addLeftHeel(){
+        if(Greenfoot.getRandomNumber(400)<1) { 
+            int x = getWidth()-10;
+            int y = Greenfoot.getRandomNumber(getHeight()-50);
+            addObject(new Heel2(), x, y);
+        }
+    }
+    
+      public void addLeftMascara(){
+        if(Greenfoot.getRandomNumber(400)<1) { 
+            int x = getWidth()-10;
+            int y = Greenfoot.getRandomNumber(getHeight()-50);
+            addObject(new Mascara2(), x, y);
+        }
+    }
+    //PONTUACAO
+    public void playersScore(){
+        showText("SCORE: " + score,getWidth()/2,50);
+    }
+    //ADICIONAR PONTOS AO SCORE 
+    public void addPointsScore(int points){
+        score= score + points;
+    }
+    //A BARBIE E O KEN PERDEM VIDA
+    public void removeLifeBarbie(int healthPoints){
+        lifeBarbie=lifeBarbie + healthPoints;
+    }
+    public void removeLifeKen(int healthPoints){
+        lifeKen=lifeKen + healthPoints;
+    }
+    //DEFINIR AS VIDAS DOS PERSONAGENS 
+    public void barbieHP(){
+        showText("BARBIE'S HP: " + getBarbieHP(),getWidth()/4,50);
+    }
+    
+    public int getBarbieHP(){
+        return lifeBarbie;
+    }
+    
+    public void setBarbieHP(int life){
+        lifeBarbie = life;
+    }
+    
+    public void kenHP(){
+        showText("KEN'S HP: " + getKenHP(),getWidth()/2 + 350,50);
+    }
+    
+    public int getKenHP(){
+        return lifeKen;
+    }
+    
+    public void setKenHP(int life){
+        lifeKen = life;
+    }
+    
+    //VAO SER USADAS NA FUNCAO WIN
+    public void potion1Barbie(){
+        getPotion1Barbie=true; 
+    }                      
+    
+    public void potion2Barbie(){
+        getPotion2Barbie=true;
+    }
+    
+    public void potion1Ken(){
+        getPotion1Ken=true; 
+    }                 
+    
+    public void potion2Ken(){
+        getPotion2Ken=true;
+    }
+    
+    
+    private void gameDesign() //LAYOUT DO JOGO
+    {
+        addObject(new BrickBlock(),0,685);
+        addObject(new BrickBlock(),80,685);
+        addObject(new BrickBlock(),160,685);
+        addObject(new BrickBlock(),240,685);
+        addObject(new BrickBlock(),320,685);
+        addObject(new BrickBlock(),400,685);
+        addObject(new BrickBlock(),480,685);
+        addObject(new BrickBlock(),560,685);
+        addObject(new BrickBlock(),640,685);
+        addObject(new BrickBlock(),720,685);
+        addObject(new BrickBlock(),800,685);
+        addObject(new BrickBlock(),880,685);
+        addObject(new BrickBlock(),960,685);
+        addObject(new BrickBlock(),1040,685);
+        addObject(new BrickBlock(),1120,685);
+        addObject(new BrickBlock(),1200,685);
+        addObject(new BrickBlock(),1280,685);
+        
+        addObject(new BrickBlock(),79,121);
+        addObject(new BrickBlock(),237,187);
+        addObject(new BrickBlock(),522,159);
+        addObject(new BrickBlock(),394,238);
+        addObject(new BrickBlock(),78,283);
+        addObject(new BrickBlock(),255,333);
+        addObject(new BrickBlock(),390,539);
+        addObject(new BrickBlock(),253,601);
+        addObject(new BrickBlock(),81,541);
+        addObject(new BrickBlock(),81,406);
+        addObject(new BrickBlock(),251,457);
+        
+        addObject(new BrickBlock(),1221,121);
+        addObject(new BrickBlock(),1063,187);
+        addObject(new BrickBlock(),778,159);
+        addObject(new BrickBlock(),906,238);
+        addObject(new BrickBlock(),1222,283);
+        addObject(new BrickBlock(),1045,333);
+        addObject(new BrickBlock(),910,539);
+        addObject(new BrickBlock(),1047,601);
+        addObject(new BrickBlock(),1219,541);
+        addObject(new BrickBlock(),1219,406);
+        addObject(new BrickBlock(),1049,457);
+        addObject(new BrickBlock(),776,473);
+        addObject(new BrickBlock(),524,473);
+        addObject(new BrickBlock(),651,307);
+
+        addObject(new LifeHeartBarbie(),205,50);
+        addObject(new LifeHeartKen(),896,50);
+        
+        addObject(new Potion1Barbie(),810,652);
+        addObject(new Potion1Ken(),71,81);
+        addObject(new Potion2Barbie(),1214,81);
+        addObject(new Potion2Ken(),490,652);
+        
+        addObject(new DiamondBarbie(),238,156);
+        addObject(new DiamondBarbie(),520,130);
+        addObject(new DiamondBarbie(),252,302);
+        addObject(new DiamondBarbie(),1223,252);
+        addObject(new DiamondBarbie(),1217,508);
+        addObject(new DiamondBarbie(),1046,568);
+        addObject(new DiamondBarbie(),908,507);
+        addObject(new DiamondBarbie(),775,443);
+        addObject(new DiamondBarbie(),907,206);
+        
+        addObject(new DiamondKen(),1061,156);
+        addObject(new DiamondKen(),1051,427);
+        addObject(new DiamondKen(),779,128);
+        addObject(new DiamondKen(),396,207);
+        addObject(new DiamondKen(),524,442);
+        addObject(new DiamondKen(),250,424);
+        addObject(new DiamondKen(),78,251);
+        addObject(new DiamondKen(),79,510);
+        addObject(new DiamondKen(),253,569);
+        
+        addObject(new Ken(),1223,643);
+        addObject(new Barbie(),78,643);
+        
+        addObject(new Fire(),650,590);
+
+    }
+}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class Potion2Ken extends Actor
+{
+    public void act() // SE 0 KEN TOCA NA SUA POCAO A MESMA E REMOVIDA E POTION2KEN E TRUE
+    {
+        if (isTouching(Ken.class)){ 
+            getWorldOfType(Game.class).potion2Ken(); 
+            getWorldOfType(Game.class).removeObject(this);
+        }
+    }
+}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class Potion2Barbie extends Actor
+{
+    public void act() // SE A BARBIE TOCA NA SUA POCAO A MESMA E REMOVIDA E POTION2BARBIE E TRUE
+    {
+        if (isTouching(Barbie.class)){ 
+            getWorldOfType(Game.class).potion2Barbie(); 
+            getWorldOfType(Game.class).removeObject(this);
+        }
+    }
+}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class Potion1Ken extends Actor
+{
+    public void act() // SE 0 KEN TOCA NA SUA POCAO A MESMA E REMOVIDA E POTION1KEN E TRUE
+    {
+        if (isTouching(Ken.class)){ 
+            getWorldOfType(Game.class).potion1Ken(); 
+            getWorldOfType(Game.class).removeObject(this);
+        }
+    }
+}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class Potion1Barbie extends Actor
+{
+    public void act() // SE A BARBIE TOCA NA SUA POCAO A MESMA E REMOVIDA E POTION1BARBIE E TRUE
+    {
+        if (isTouching(Barbie.class)){ 
+            getWorldOfType(Game.class).potion1Barbie(); 
+            getWorldOfType(Game.class).removeObject(this);
+        }
+    }
+}
+
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+
+public class Ken extends Players
+{
+    private int speed = 6; //VELOCIDADE Q ANDA
+    private GreenfootImage image1, image2;
+
+    private boolean jumping;
+    private int jumpStrenght = 20; //ALTURA Q SALTA
+//VARIAVEIS
+    private int verticalSpeed;
+    private int gravity = 2; 
+    //SO PRIMEIRA INTERSECAO
+    private boolean checkMakeup;
+
+
+    public Ken() //USAR IMAGENS ESPELHADAS PARA MOVIMENTO
+    {
+        image1 = new GreenfootImage("ken2back.png");
+        image2 = new GreenfootImage("ken2.png");
+    }
+
+    public void act()
+    {
+        checkFall();
+        checkKeys();
+        checkRightWall();
+        checkLeftWall();
+        checkCeiling();
+        catchDiamonds();
+        makeupHit();
+        super.hitAudio(); //CHAMAR O METODO DA SUPERCLASSE 
+    }
+//SABER A VIDA DO KEN
+    public int getHP() {  
+        return getWorldOfType(Game.class).getKenHP();
+    }
+
+    
+    private void checkKeys(){
+        if(Greenfoot.isKeyDown("up") && jumping == false)
+        {
+            jump();
+            Greenfoot.playSound("Jump.mp3");
+        }
+
+        if(Greenfoot.isKeyDown("right"))
+        {
+            setLocation(getX() + speed, getY());
+            setImage(image2);
+        }
+
+        if(Greenfoot.isKeyDown("left"))
+        {
+            setLocation(getX() - speed, getY());
+            setImage(image1);
+        }
+    }
+    private void checkFall(){ //SE TA NO CHAO NAO HA VERTICALSPEED, CASO CONTRARIO CAI.
+        if (onGround() == true)
+            verticalSpeed = 0;
+
+        else
+            fall();
+    }
+
+    private void fall(){
+        setLocation(getX(), getY() + verticalSpeed);
+
+        if(verticalSpeed <= 12)
+        verticalSpeed = verticalSpeed + gravity; //NAO TAR A ACELERAR PARA SEMPRE
+
+        jumping = true;
+    }
+    
+    private boolean onGround(){
+        int spriteHeight = getImage().getHeight() + 1;
+        int lookForGround = spriteHeight/2;
+
+        Actor ground = getOneObjectAtOffset(0, lookForGround, BrickBlock.class);
+        if(ground == null)
+        {
+            jumping = true;//SE N TA NO CHAO TA A SALTAR
+            return false;//N TA NO CHAO
+        }
+        else{
+            moveToGround(ground);
+            return true;
+        }
+    }
+
+    private void moveToGround(Actor ground){//PARA NAO FICAR DENTRO DO CHAO
+        int groundHeight = ground.getImage().getHeight();//TAMANHO ESPECIFICO DO CHAO
+        int newY = ground.getY() - (groundHeight + getImage().getHeight())/2;//PQ O GREENFOOT MEDE PELA METADE 
+
+        setLocation(getX(), newY);
+        jumping = false;
+        //NEWY E PARA ONDE QUEREMOS MOVER O KEN
+    }
+    
+    private boolean checkCeiling(){
+        int spriteHeight = getImage().getHeight() + 1;
+        int lookForCeiling = spriteHeight/2;
+
+        Actor ceiling = getOneObjectAtOffset(0, -lookForCeiling, BrickBlock.class);
+        
+        if(ceiling != null)
+        {
+            bopHead(ceiling); // BATE COM A CABECA SE TIVER UM TETO
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    private void bopHead(Actor ceiling){ //BATE COM A CABECA NO LIMITE DO BLOCO E NAO A MEIO DELE
+        int ceilingHeight = ceiling.getImage().getHeight();
+        int newY = ceiling.getY() + (ceilingHeight + getImage().getHeight())/2;
+
+        setLocation(getX(), newY);
+        jumping = false;
+        verticalSpeed = 2;
+    }
+
+    private boolean checkRightWall(){ //CASO TENHA BLOCO A DIREITA, PARA.
+        int spriteWidth = getImage().getWidth() + 1;
+        int lookForRightWalls = spriteWidth/2;
+
+        Actor rightWall = getOneObjectAtOffset(lookForRightWalls, 0, BrickBlock.class); //Y=0 POIS QUEREMOS ESQUERDA E DIREITA (X)
+        
+        if(rightWall == null)
+        {
+            return false;
+        }
+        else{
+            stopByrightWall(rightWall); //PARA QUANDO TOCA NO BLOCO. NAO PASSA SEMPRE
+            return true;
+        }
+    }
+
+    private void stopByrightWall(Actor rightWall){ //PARA NAO FICAR BUGADO, METADE DENTRO
+        int wallWidth = rightWall.getImage().getWidth(); //VE LARGURA DO BLOCO
+        int newX = rightWall.getX() - (wallWidth + getImage().getWidth())/2;
+        //MOVE LO PARA A ESQUERDA
+        setLocation(newX, getY());
+    }
+
+    private boolean checkLeftWall(){ //CASO TENHA BLOCO A ESQUERDA, PARA.
+        int spriteWidth = getImage().getWidth() + 1;
+        int lookForLeftWalls = -spriteWidth/2;
+        
+        Actor leftWall = getOneObjectAtOffset(lookForLeftWalls, 0, BrickBlock.class);//Y=0 POIS QUEREMOS ESQUERDA E DIREITA (X)
+        
+        if(leftWall == null)
+        {
+            return false;
+        }
+        else{
+            stopByLeftWall(leftWall); //PARA QUANDO TOCA NO BLOCO. NAO PASSA SEMPRE
+            return true;
+        }
+    }
+    
+    private void stopByLeftWall(Actor leftWall){ //PARA NAO FICAR BUGADO, METADE DENTRO
+        int wallWidth = leftWall.getImage().getWidth(); //VE LARGURA DO BLOCO
+        int newX = leftWall.getX() + (wallWidth + getImage().getWidth())/2;
+        //MOVE LO PARA A DIREITA
+        setLocation(newX, getY());
+    }
+
+    private void jump(){ // SOBE E NEGATIVO 
+        verticalSpeed = verticalSpeed - jumpStrenght;
+        jumping = true;
+        fall();
+    }
+     //SE O KEN TOCA NO SEU DIAMANTE ELE DESAPARECE E E ADICIONADO 10 PONTOS AO SCORE
+    public void catchDiamonds(){
+        if(isTouching(DiamondKen.class)) { 
+                getWorldOfType(Game.class).addPointsScore(10); 
+                removeTouching(DiamondKen.class);
+        }
+    }
+    //SE O KEN E ATINGIDO SAO RETIRADOS 10 PONTOS NA VIDA DELE
+     public void makeupHit(){
+        if(isTouching(Makeup.class)){
+            if(checkMakeup==false){ 
+                getWorldOfType(Game.class).removeLifeKen(-10); 
+            }
+            checkMakeup=true;
+        }
+        else checkMakeup =false;
+    }
+}
+
+    import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+
+    public class Barbie extends Players
+    {
+    private int speed = 6;
+    private GreenfootImage image1, image2;
+
+    private boolean jumping;
+    private int jumpStrenght = 20;
+
+    private int verticalSpeed;
+    private int gravity = 2;
+    //SO PRIMEIRA INTERSECAO
+    private boolean checkMakeup; 
+    private boolean sound;
+
+    public Barbie() //BARBIE ESPELHADA
+    {
+        image1 = new GreenfootImage("barbie1back.png");  
+        image2 = new GreenfootImage("barbie1.png");
+    }
+
+    public void act()
+    {
+        checkFall();
+        checkKeys();
+        checkRightWall();
+        checkLeftWall();
+        checkCeiling();
+        catchDiamonds();
+        makeupHit();
+        hitAudio();
+    }
+    
+    public int getHP() {  //VIDA QUE BARBIE TEM
+        return getWorldOfType(Game.class).getBarbieHP();
+    }
+    
+    public void hitAudio(){ //OVERRIDE
+        if(isTouching(Makeup.class)){
+            if (sound==false){
+                Greenfoot.playSound("hitSound2.mp3"); 
+            }
+            sound=true;
+        }
+        else sound=false;
+    }
+    
+    private void checkKeys(){ //DEFINIR COMANDOS
+        if(Greenfoot.isKeyDown("w") && jumping == false)
+        {
+            jump();
+            Greenfoot.playSound("Jump.mp3");
+        }
+
+        if(Greenfoot.isKeyDown("d"))
+        {
+            setLocation(getX() + speed, getY());
+            setImage(image2);
+        }
+
+        if(Greenfoot.isKeyDown("a"))
+        {
+            setLocation(getX() - speed, getY());
+            setImage(image1);
+        }
+    }
+    
+    private void checkFall(){ //SE TA NO CHAO NAO HA VERTICALSPEED, CASO CONTRARIO CAI.
+        if (onGround() == true)
+            verticalSpeed = 0;
+        else
+            fall();
+    }
+
+    private void fall(){ 
+        setLocation(getX(), getY() + verticalSpeed); 
+        if(verticalSpeed <= 12)
+        verticalSpeed = verticalSpeed + gravity; //NAO TAR A ACELERAR PARA SEMPRE
+        jumping = true;
+    }
+    
+    private boolean onGround(){ //
+        int spriteHeight = getImage().getHeight();
+        int lookForGround = spriteHeight/2;
+        Actor ground = getOneObjectAtOffset(0, lookForGround, BrickBlock.class);
+        if(ground == null)
+        {
+            jumping = true; //SE N TA NO CHAO TA A SALTAR
+            return false; //N TA NO CHAO
+        }
+        else{
+            moveToGround(ground);
+            return true;
+        }
+    }
+
+    private void moveToGround(Actor ground){ //PARA NAO FICAR DENTRO DO CHAO
+        int groundHeight = ground.getImage().getHeight(); //TAMANHO ESPECIFICO DO CHAO
+        int newY = ground.getY() - (groundHeight + getImage().getHeight())/2; //PQ O GREENFOOT MEDE PELA METADE  
+        setLocation(getX(), newY);
+        jumping = false;
+        //NEWY E PARA ONDE QUEREMOS MOVER A BARBIE 
+    }
+    
+    private boolean checkCeiling(){ //
+        int spriteHeight = getImage().getHeight();
+        int lookForCeiling = spriteHeight/2;
+
+        Actor ceiling = getOneObjectAtOffset(0, -lookForCeiling, BrickBlock.class);
+        if(ceiling != null)
+        {
+            bopHead(ceiling); // BATE COM A CABECA SE TIVER UM TETO
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    private void bopHead(Actor ceiling){ //BATE COM A CABECA NO LIMITE DO BLOCO E NAO A MEIO DELE
+        int ceilingHeight = ceiling.getImage().getHeight();
+        int newY = ceiling.getY() + (ceilingHeight + getImage().getHeight())/2;
+
+        setLocation(getX(), newY);
+        jumping = false;
+        verticalSpeed = 2; 
+    }
+
+    private boolean checkRightWall(){ //CASO TENHA BLOCO A DIREITA, PARA.
+        int spriteWidth = getImage().getWidth();
+        int lookForRightWalls = spriteWidth/2;
+
+        Actor rightWall = getOneObjectAtOffset(lookForRightWalls, 0, BrickBlock.class); //Y=0 POIS QUEREMOS ESQUERDA E DIREITA (X)
+        if(rightWall == null)
+        {
+            return false;
+        }
+        else{
+            stopByrightWall(rightWall);//PARA QUANDO TOCA NO BLOCO. NAO PASSA SEMPRE
+            return true;
+        }
+    }
+
+    private void stopByrightWall(Actor rightWall){ //PARA NAO FICAR BUGADO, METADE DENTRO
+        int wallWidth = rightWall.getImage().getWidth(); //VE LARGURA DO BLOCO
+        int newX = rightWall.getX() - (wallWidth + getImage().getWidth())/2; 
+        //MOVE LO PARA A ESQUERDA
+        setLocation(newX, getY());
+    }
+
+    private boolean checkLeftWall(){ //CASO TENHA BLOCO A ESQUERDA, PARA.
+        int spriteWidth = getImage().getWidth();
+        int lookForLeftWalls = -spriteWidth/2;
+
+        Actor leftWall = getOneObjectAtOffset(lookForLeftWalls, 0, BrickBlock.class); //Y=0 POIS QUEREMOS ESQUERDA E DIREITA (X)
+        if(leftWall == null)
+        {
+            return false;
+        }
+        else{
+            stopByLeftWall(leftWall); //PARA QUANDO TOCA NO BLOCO. NAO PASSA SEMPRE
+            return true;
+        }
+    }
+    
+    private void stopByLeftWall(Actor leftWall){ //PARA NAO FICAR BUGADO, METADE DENTRO
+        int wallWidth = leftWall.getImage().getWidth();//VE LARGURA DO BLOCO
+        int newX = leftWall.getX() + (wallWidth + getImage().getWidth())/2;
+        //MOVE LO PARA A DIREITA
+        setLocation(newX, getY());
+    }
+
+    private void jump(){ // SOBE E NEGATIVO 
+        verticalSpeed = verticalSpeed - jumpStrenght;
+        jumping = true;
+        fall();
+    }
+    //SE A BARBIE TOCA NO SEU DIAMANTE ELE DESAPARECE E E ADICIONADO 10 PONTOS AO SCORE
+    public void catchDiamonds(){ 
+        if(isTouching(DiamondBarbie.class)) { 
+        getWorldOfType(Game.class).addPointsScore(10); 
+        removeTouching(DiamondBarbie.class);}
+    }
+    //SE A BARBIE E ATINGIDA SAO RETIRADOS 10 PONTOS NA VIDA DELA
+    public void makeupHit(){ 
+        if(isTouching(Makeup.class)){
+            if(checkMakeup==false){ 
+                getWorldOfType(Game.class).removeLifeBarbie(-10);
+            }
+            checkMakeup=true;
+        }
+        else checkMakeup =false;
+    }
+    }
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class Players extends Actor
+{
+    private Boolean sound; 
+    //SOM PARA QUANDO SAO ATINGIDOS COMECA A FALSE E SO HA SOM NA PRIMEIRA QUE TOCA
+    public void hitAudio()
+    {
+        if(isTouching(Makeup.class)){
+            if (sound==false){ 
+                Greenfoot.playSound("hitSound1.mp3");
+            }
+            sound=true;
+        }
+        else sound=false;
+    }
+}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class Mascara2 extends Makeup
+{
+    public void act(){
+        rightToLeft(); //MOVEM SE DA DIREITA P ESQUERDA
+    }    
+    
+    public void rightToLeft(){
+        move(-5);
+        if(getX()==0) getWorld().removeObject(this); 
+        //MOVEM SE E DESAPARECEM QND CHEGAM NO LADO ESQUERDO
+    }
+}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class Mascara1 extends Makeup
+{
+    public void act()
+    {
+        leftToRight(); //MOVEM SE DA ESQUERDA P DIREITA
+    }
+    
+    public void leftToRight(){
+        move(5);
+        if(getX()==getWorld().getWidth()-10)  getWorld().removeObject(this);
+        //MOVEM SE E DESAPARECEM QND CHEGAM NO LADO DIREITO
+    }
+}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class Heel2 extends Makeup
+{
+    public void act(){
+        rightToLeft(); //MOVEM SE DA DIREITA P ESQUERDA
+    }    
+ 
+    public void rightToLeft(){
+        move(-5);
+        if(getX()==0) getWorld().removeObject(this);
+        //MOVEM SE E DESAPARECEM QND CHEGAM NO LADO ESQUERDO
+    }
+}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class Heel1 extends Makeup
+{
+    public void act()
+    {
+       leftToRight(); //MOVEM SE DA ESQUERDA P DIREITA
+    }
+    
+    public void leftToRight(){
+        move(5);
+        if(getX()==getWorld().getWidth()-10)  getWorld().removeObject(this);
+        //MOVEM SE E DESAPARECEM QND CHEGAM NO LADO DIREITO
+    }
+}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class Makeup extends Actor
+{}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class LifeHeartKen extends Actor
+{}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class LifeHeartBarbie extends Actor
+{}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class DiamondKen extends Diamond
+{}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class DiamondBarbie extends Diamond
+{}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class Diamond extends Actor
+{}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class Fire extends Actor
+{
+    //DECLARACAO DE VARIAVEIS PARA FOGO ESPELHADO
+    private GreenfootImage Fire1;
+    private GreenfootImage Fire2;
+    private int contador;
+    private boolean FireBarbie;
+    private boolean FireKen;
+    
+    public Fire()
+    {
+    Fire1 = new GreenfootImage("portal.png");
+    Fire2 = new GreenfootImage("portalBack.png");
+    setImage(Fire2); //PRIMEIRA IMAGEM
+    }
+    public void act()
+    {
+    moveFire();
+    fireDeathBarbie();
+    fireDeathKen(); 
+    }
+    //ANIMACAO DO FOGO COM AS IMAGENS ESPELHADAS
+    public void moveFire(){
+        contador++;
+        if(contador==10){ // QND CHEGA A 10, FREQUENCIA COM QUE TROCA
+            if(getImage() == Fire1) setImage(Fire2); //MUDA
+            else setImage(Fire1);
+            contador=0;
+        }
+    }
+    //SE A BARBIE CAI NO FOGO OU TOCA NO FOGO MORRE INSTANTANEAMENTE
+    public void fireDeathBarbie(){
+        if(isTouching(Barbie.class)){ //SE HA INTERACAO
+            if(FireBarbie ==false){ //REMOVE PONTOS APENAS UMA VEZ
+                removeTouching(Barbie.class); //REMOVE CLASSE
+                getWorldOfType(Game.class).setBarbieHP(0); 
+            }
+            FireBarbie = true;
+        }
+        else FireBarbie=false;
+    }
+    //SE O KEN CAI NO FOGO OU TOCA NO FOGO MORRE INSTANTANEAMENTE
+    public void fireDeathKen(){
+        if(isTouching(Ken.class)){  
+            if(FireKen == false){ 
+                removeTouching(Ken.class); //REMOVE CLASSE
+                getWorldOfType(Game.class).setKenHP(0); 
+            }
+            FireKen=true;
+        }
+        else FireKen=false;
+    }
+}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class ButtonBarbie extends Button
+{
+  public ButtonBarbie() //AUMENTAR TAMANHO
+    {
+            GreenfootImage imagem = getImage();
+            int y = imagem.getHeight();
+            int x = imagem.getWidth();
+            imagem.scale(x*2,y*2);
+    }
+    
+public void act()
+    {
+        clickSound();
+    }
+    
+    public void clickSound()
+    {
+    if(Greenfoot.mouseClicked(this))
+    {
+    Greenfoot.setWorld(new StartMenu()); //DPS DE CLICAR NO BOTAO BARBIE VAI PARA O START MENU
+    sound(); //SOM AO CLICAR
+    }
+}
+}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class ButtonPlayAgain extends ButtonPlay
+{}
+
+import greenfoot.*;  
+
+public class ButtonPlay extends Button
+{
+    public ButtonPlay() //DIMINUIR TAMANHO
+    {
+            GreenfootImage imagem = getImage();
+            int y = imagem.getHeight();
+            int x = imagem.getWidth();
+            imagem.scale(x/4,y/4);
+    }
+}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class ButtonMainMenu extends Button
+{
+    public ButtonMainMenu() //DIMINUI TAMANHO
+    {
+            GreenfootImage imagem = getImage();
+            int y = imagem.getHeight();
+            int x = imagem.getWidth();
+            imagem.scale(x/3,y/3);
+    }
+
+    public void act()
+    {
+        clickSound();
+    }
+
+    public void clickSound(){
+        if(Greenfoot.mouseClicked(this)){
+            Greenfoot.setWorld(new Background()); //VAI PARA O BACKGROUND INICIAL
+            sound(); //SOM AO CLICAR
+        }
+    } 
+}
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class ButtonHelp extends Button
+{
+    public ButtonHelp() //DIMINUI O TAMANHO
+    {
+            GreenfootImage imagem = getImage();
+            int y = imagem.getHeight();
+            int x = imagem.getWidth();
+            imagem.scale(x/4,y/4);
+    }
+    
+    public void act()
+    {
+        clickSound();
+    }
+    
+    public void clickSound()
+    {
+    if(Greenfoot.mouseClicked(this))
+    {
+    Greenfoot.setWorld(new Help()); //INSTRUCOES DO JOGO
+    sound(); //SOM AO CLICAR
+    }
+    }
+}
+
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class ButtonCredits extends Button
+{
+    public ButtonCredits() //DIMINUI O TAMANHO
+    {
+            GreenfootImage imagem = getImage();
+            int y = imagem.getHeight();
+            int x = imagem.getWidth();
+            imagem.scale(x/4,y/4);
+    }
+    
+    public void act()
+    {
+        clickSound();
+    }
+    
+    public void clickSound()
+    {
+    if(Greenfoot.mouseClicked(this))
+    {
+    Greenfoot.setWorld(new Credits()); // DA-NOS OS AUTORES
+    sound(); //SOM AO CLICAR
+    }
+    }
+}
+
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class ButtonBack extends Button
+{
+      public ButtonBack() //DIMINUR TAMANHO
+    {
+            GreenfootImage imagem = getImage();
+            int y = imagem.getHeight();
+            int x = imagem.getWidth();
+            imagem.scale(x/6,y/6);
+    }
+    
+    public void act() 
+    {
+        clickSound();
+    }
+    
+    public void clickSound()
+    {
+    if(Greenfoot.mouseClicked(this))
+    {
+    Greenfoot.setWorld(new StartMenu()); //VAI PARA O STARTMENU
+    sound(); //SOM AO CLICAR
+    }
+}
+}
+
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class Button extends Actor
+{
+    public void act()
+    {
+        clickSound();
+    }
+    
+    public void clickSound()
+    {
+    if(Greenfoot.mouseClicked(this))
+    {
+    Greenfoot.setWorld(new Game()); //COMECA O JOGO CASO SEJA CLICADO NO BOTAO. VAI SER HERDADO PELO PLAY 
+    sound();
+    }
+    }
+
+    public void sound ()
+    {
+    Greenfoot.playSound("ButtonSound.mp3");
+    }
+}
+
+
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+public class BrickBlock extends Actor
+{
+    public BrickBlock(){
+        this(105,30); //TAMANHO DO BLOCO
+    }
+    //OVERLOADING
+    public BrickBlock(int width,int height){
+        GreenfootImage image = getImage();
+        image.scale(width,height);
+        setImage(image);
+    }
+    // DA A ALTURA E COMPRIMENTO
+}

@@ -1,0 +1,16 @@
+#BlueJ class context
+comment0.target=Crab
+comment0.text=\r\n\ This\ class\ defines\ a\ crab.\ Crabs\ live\ on\ the\ beach.\r\n
+comment1.params=
+comment1.target=Crab()
+comment2.params=
+comment2.target=void\ act()
+comment3.params=
+comment3.target=void\ checkKeyPress()
+comment4.params=
+comment4.target=void\ lookForWorm()
+comment4.text=\r\n\ This\ method\ is\ used\ for\ the\ the\ crab\ to\ eat\ a\ worm\ if\ it\ sees\ one\r\n
+comment5.params=
+comment5.target=void\ turnAtEdge()
+comment5.text=\r\n\ This\ method\ is\ used\ for\ the\ the\ crab\ to\ turn\ when\ at\ the\ edge\ of\ the\ world\r\n
+numComments=6

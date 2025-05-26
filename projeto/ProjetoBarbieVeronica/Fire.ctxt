@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.target=Fire
+comment1.params=
+comment1.target=Fire()
+comment2.params=
+comment2.target=void\ act()
+comment3.params=
+comment3.target=void\ moveFire()
+comment4.params=
+comment4.target=void\ fireDeathBarbie()
+comment5.params=
+comment5.target=void\ fireDeathKen()
+numComments=6

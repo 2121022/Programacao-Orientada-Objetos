@@ -1,0 +1,7 @@
+#BlueJ class context
+comment0.target=BrickBlock
+comment1.params=
+comment1.target=BrickBlock()
+comment2.params=width\ height
+comment2.target=BrickBlock(int,\ int)
+numComments=3
